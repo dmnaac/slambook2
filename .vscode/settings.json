@@ -68,5 +68,6 @@
     "valarray": "cpp",
     "variant": "cpp",
     "bit": "cpp"
-  }
+  },
+  "marscode.chatLanguage": "auto"
 }
