@@ -5,16 +5,18 @@
 #include "ceres/ceres.h"
 #include "rotation.h"
 
-class SnavelyReprojectionError {
+class SnavelyReprojectionError
+{
 public:
     SnavelyReprojectionError(double observation_x, double observation_y) : observed_x(observation_x),
                                                                            observed_y(observation_y) {}
 
-    template<typename T>
+    template <typename T>
     bool operator()(const T *const camera,
                     const T *const point,
-                    T *residuals) const {
-        // camera[0,1,2] are the angle-axis rotation
+                    T *residuals) const
+    {
+        // camera[0,1,2] are the angle-axis rotationss
         T predictions[2];
         CamProjectionWithDistortion(camera, point, predictions);
         residuals[0] = predictions[0] - T(observed_x);
@@ -29,8 +31,9 @@ public:
     // [6-8] : camera parameter, [6] focal length, [7-8] second and forth order radial distortion
     // point : 3D location.
     // predictions : 2D predictions with center of the image plane.
-    template<typename T>
-    static inline bool CamProjectionWithDistortion(const T *camera, const T *point, T *predictions) {
+    template <typename T>
+    static inline bool CamProjectionWithDistortion(const T *camera, const T *point, T *predictions)
+    {
         // Rodrigues' formula
         T p[3];
         AngleAxisRotatePoint(camera, point, p);
@@ -57,7 +60,8 @@ public:
         return true;
     }
 
-    static ceres::CostFunction *Create(const double observed_x, const double observed_y) {
+    static ceres::CostFunction *Create(const double observed_x, const double observed_y)
+    {
         return (new ceres::AutoDiffCostFunction<SnavelyReprojectionError, 2, 9, 3>(
             new SnavelyReprojectionError(observed_x, observed_y)));
     }
@@ -68,4 +72,3 @@ private:
 };
 
 #endif // SnavelyReprojection.h
-
